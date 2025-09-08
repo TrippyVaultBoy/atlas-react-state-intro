@@ -3,19 +3,31 @@ import { useState ,useEffect } from "react";
 export default function SchoolCatalog() {
  
   const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
-    fetch("../public/api/courses.json")
+    fetch("/api/courses.json")
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error("Error fetching data: ", error));
   }, []);
   
+  const filteredData = data.filter((course) =>
+    course.courseNumber.toLowerCase().includes(search.toLowerCase()) || 
+    course.courseName.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="school-catalog">
       
       <h1>School Catalog</h1>
       
-      <input type="text" placeholder="Search" />
+      <input
+        type="text"
+        placeholder="Search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       
       <table>
         <thead>
@@ -29,20 +41,20 @@ export default function SchoolCatalog() {
           </tr>
         </thead>
 
-        {data.map((course) => (
-          <tbody>
-          <tr key={course.courseNumber}>
-            <td>{course.trimester}</td>
-            <td>{course.courseNumber}</td>
-            <td>{course.courseName}</td>
-            <td>{course.semesterCredits}</td>
-            <td>{course.totalClockHours}</td>
-            <td>
-              <button>Enroll</button>
-            </td>
-          </tr>
-          </tbody>
-        ))}
+        <tbody>
+          {filteredData.map((course) => (
+            <tr key={course.courseNumber}>
+              <td>{course.trimester}</td>
+              <td>{course.courseNumber}</td>
+              <td>{course.courseName}</td>
+              <td>{course.semesterCredits}</td>
+              <td>{course.totalClockHours}</td>
+              <td>
+                <button>Enroll</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
         
         {/* <tbody>
           <tr>

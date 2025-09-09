@@ -7,6 +7,7 @@ export default function SchoolCatalog() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("trimester");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [page, setPage] = useState(1);
 
   // Fetch course data is fetched
   useEffect(() => {
@@ -58,6 +59,12 @@ export default function SchoolCatalog() {
     return 0;
   });
 
+  // Calculate pagination data
+  const page_size = 5;
+  const currentPage = sortedData.slice((page - 1) * page_size, page * page_size);
+  const hasMore = sortedData.length > page * page_size;
+  const hasLess = page > 1;
+
   // Toggle sortDirection when tab is clicked
   const toggleSort = (column) => {
     if (sort === column) {
@@ -94,7 +101,7 @@ export default function SchoolCatalog() {
         </thead>
 
         <tbody>
-          {sortedData.map((course) => (
+          {currentPage.map((course) => (
             <tr key={course.courseNumber}>
               <td>{course.trimester}</td>
               <td>{course.courseNumber}</td>
@@ -110,8 +117,14 @@ export default function SchoolCatalog() {
       </table>
       
       <div className="pagination">
-        <button>Previous</button>
-        <button>Next</button>
+        <button
+          disabled={!hasLess}
+          onClick={() => setPage(page - 1)}
+        >Previous</button>
+        <button
+          disabled={!hasMore}
+          onClick={() => setPage(page + 1)}
+        >Next</button>
       </div>
     </div>
   );

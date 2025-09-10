@@ -1,4 +1,5 @@
-import { useState ,useEffect } from "react";
+import { useState ,useEffect, useContext } from "react";
+import { EnrolledCourses } from "./App";
 
 export default function SchoolCatalog() {
   
@@ -8,6 +9,7 @@ export default function SchoolCatalog() {
   const [sort, setSort] = useState("trimester");
   const [sortDirection, setSortDirection] = useState("asc");
   const [page, setPage] = useState(1);
+  const { myCourses, setMyCourses } = useContext(EnrolledCourses);
 
   // Fetch course data is fetched
   useEffect(() => {
@@ -75,6 +77,13 @@ export default function SchoolCatalog() {
     }
   };
 
+  const enrollCourse = (course) => {
+    if (!myCourses.includes(course)) {
+      setMyCourses([...myCourses, course]);
+      console.log(myCourses);
+    }
+  }
+
   // Return school-catalog
   return (
     <div className="school-catalog">
@@ -109,7 +118,7 @@ export default function SchoolCatalog() {
               <td>{course.semesterCredits}</td>
               <td>{course.totalClockHours}</td>
               <td>
-                <button>Enroll</button>
+                <button onClick={() => enrollCourse(course)}>Enroll</button>
               </td>
             </tr>
           ))}
